@@ -14,6 +14,156 @@ section{padding:clamp(76px,11vw,145px) clamp(20px,7vw,100px)}.section-head{text-
 @keyframes heroIn{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}@keyframes slowTurn{to{transform:rotate(360deg)}}@keyframes scrollPulse{0%,100%{transform:scaleY(.55);transform-origin:top;opacity:.5}50%{transform:scaleY(1);opacity:1}}@keyframes hint{0%,100%{opacity:.5}50%{opacity:1}}
 @media(max-width:700px){.nav{padding-left:20px;padding-right:14px}.navlinks{display:none;position:absolute;top:100%;left:0;right:0;background:rgba(248,245,239,.98);backdrop-filter:blur(16px);padding:18px 22px 24px;flex-direction:column;align-items:stretch;gap:0;border-bottom:1px solid var(--line)}.navlinks.open{display:flex}.navlinks a{padding:14px 0;border-bottom:1px solid var(--line)}.navlinks .nav-cta{text-align:center;margin-top:12px}.menu-toggle{display:block}.hero:before{width:70vw;height:70vw}.hero:after{width:84vw;height:84vw}.names-grid{grid-template-columns:1fr;gap:32px}.ampersand{margin:0;font-size:2.4rem}.photo-frame{max-width:245px}.person h3{font-size:2.8rem}.story-grid{grid-template-columns:1fr;gap:30px}.story-mark{font-size:9rem}.story-text{text-align:center}.story-text p{margin-left:auto;margin-right:auto}.event{grid-template-columns:75px 1fr;gap:15px;padding:25px 0}.event-date{font-size:1.45rem}.event-icon{display:none}.event h3{font-size:1.55rem}.event p{font-size:.76rem}.time-box{min-width:62px}.time-box strong{font-size:2.7rem}.section-head{margin-bottom:36px}.rsvp-actions{flex-direction:column;max-width:280px;margin:auto}.rsvp-actions .button{width:100%}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}}
+
+/* STEP 1 REFINEMENT — fluid envelope-to-invitation reveal */
+.envelope-screen {
+  transition: opacity .78s cubic-bezier(.22,.72,.18,1), visibility .78s ease, background-color .9s ease;
+  background: radial-gradient(ellipse at 50% 42%, #fffdf8 0%, #f6f0e4 58%, #eee4d2 100%);
+}
+.envelope-screen:before,
+.envelope-screen:after {
+  transition: transform 1.4s cubic-bezier(.16,1,.3,1), opacity .8s ease;
+}
+.envelope-screen:before { opacity: .72; }
+.envelope-screen:after { opacity: .5; }
+.envelope-content {
+  transform: translate3d(0,0,0);
+  transition: transform 1.05s cubic-bezier(.16,1,.3,1), opacity .7s ease;
+  will-change: transform, opacity;
+}
+.envelope-label {
+  margin-bottom: 25px;
+  letter-spacing: .28em;
+  font-size: .62rem;
+}
+.envelope {
+  width: min(78vw, 370px);
+  height: min(53vw, 242px);
+  min-height: 188px;
+  margin-bottom: 28px;
+  perspective: 1400px;
+  filter: drop-shadow(0 28px 28px rgba(92,75,43,.15));
+  -webkit-tap-highlight-color: transparent;
+  transform: translateZ(0);
+}
+.env-back {
+  border-radius: 7px;
+  border: 1px solid #cbb88d;
+  background: linear-gradient(145deg,#eee4cf,#d8c7a4);
+  box-shadow: inset 0 0 0 5px rgba(255,253,247,.18);
+}
+.env-letter {
+  left: 7%;
+  right: 7%;
+  top: 7%;
+  height: 86%;
+  border-radius: 3px;
+  border: 1px solid #d6c39a;
+  outline: 1px solid rgba(255,255,255,.8);
+  outline-offset: -6px;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(228,211,170,.22), transparent 62%),
+    linear-gradient(145deg,#fffefb,#f8f2e5);
+  box-shadow: 0 8px 20px rgba(80,63,35,.10), inset 0 0 0 1px rgba(183,154,97,.1);
+  transition: transform 1.05s cubic-bezier(.16,1,.3,1), box-shadow .8s ease, border-radius .8s ease;
+  z-index: 1;
+  overflow: hidden;
+}
+.env-letter:before,
+.env-letter:after {
+  content: "✦";
+  position: absolute;
+  color: #c0a36a;
+  opacity: .72;
+  font-size: 12px;
+  line-height: 1;
+}
+.env-letter:before { top: 18px; left: 18px; }
+.env-letter:after { bottom: 18px; right: 18px; }
+.env-letter small {
+  font-size: .48rem;
+  letter-spacing: .24em;
+  color: #9c8352;
+}
+.env-letter strong {
+  font-size: clamp(1.55rem,6vw,2.45rem);
+  letter-spacing: -.035em;
+  color: #776343;
+  margin-top: 12px;
+  text-shadow: 0 1px 0 #fff;
+}
+.env-flap {
+  background: linear-gradient(155deg,#e6d7b8,#cdb88a);
+  border-top: 1px solid #c8b386;
+  backface-visibility: visible;
+  transform-style: preserve-3d;
+  transition: transform 1s cubic-bezier(.22,.72,.18,1);
+}
+.env-front {
+  background: linear-gradient(145deg,#eee4d0,#e2d4b8);
+  filter: drop-shadow(0 -1px 0 rgba(255,255,255,.5));
+}
+.seal {
+  width: 48px;
+  height: 48px;
+  background: radial-gradient(circle at 35% 28%, #d9c18d, #a88a50 72%);
+  border: 1px solid #f5e8c8;
+  outline: 1px solid #b99a5b;
+  outline-offset: -5px;
+  box-shadow: 0 5px 14px rgba(87,66,30,.22), inset 0 1px 2px rgba(255,255,255,.6);
+  transition: opacity .35s ease, transform .65s cubic-bezier(.2,.8,.2,1);
+}
+.envelope.opened .env-flap {
+  transform: rotateX(180deg);
+  z-index: 0;
+}
+.envelope.opened .env-letter {
+  z-index: 5;
+  transform: translate3d(0,-112%,0) scale(1.045) rotateX(1deg);
+  box-shadow: 0 25px 45px rgba(75,61,39,.22), 0 0 0 1px rgba(255,255,255,.7);
+  transition-delay: .28s;
+}
+.envelope.opened .env-front {
+  opacity: 0;
+  transition: opacity .55s ease .28s;
+}
+.env-front { transition: opacity .55s ease; }
+.envelope.opened .seal {
+  opacity: 0;
+  transform: translate(-50%,-50%) scale(.65) rotate(-18deg);
+  transition-delay: .12s;
+}
+.envelope-screen.journey {
+  background: rgba(246,240,228,.97);
+}
+.envelope-screen.journey:before { transform: scale(1.35); opacity: .12; }
+.envelope-screen.journey:after { transform: scale(1.5); opacity: .08; }
+.envelope-screen.journey .envelope-content {
+  transform: translate3d(0,-13vh,0) scale(1.12);
+  opacity: 0;
+}
+.envelope-screen.journey .envelope-label,
+.envelope-screen.journey .tap-hint,
+.envelope-screen.journey .skip-intro {
+  opacity: 0;
+  transition: opacity .28s ease;
+}
+.tap-hint { transition: opacity .28s ease; }
+.skip-intro { transition: opacity .25s ease; }
+.envelope:focus-visible {
+  outline: 2px solid #b79a61;
+  outline-offset: 10px;
+  border-radius: 8px;
+}
+@media (max-width: 420px) {
+  .envelope { width: min(82vw, 340px); height: min(56vw, 220px); min-height: 174px; }
+  .env-letter strong { font-size: clamp(1.45rem,7vw,2rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .envelope-screen, .envelope-content, .env-letter, .env-flap, .seal,
+  .envelope-screen:before, .envelope-screen:after { transition-duration: .01ms !important; }
+}
+
 </style>
 </head>
 <body class="locked">
@@ -43,11 +193,11 @@ section{padding:clamp(76px,11vw,145px) clamp(20px,7vw,100px)}.section-head{text-
 </main><footer class="footer">Made with love · A celebration of two families</footer></div>
 <script>
 /* QUICK EDIT GUIDE: change the values below. No build tools required. */
-const WEDDING={groom:'Arbaaz Khan',bride:'Bride Name',year:2026,city:'City, Gujarat',venue:'Venue details coming soon',mapQuery:'',whatsapp:'',events:[{day:25,month:'December',title:'Haldi & Engagement',note:'A day of colour, blessings, laughter and the first celebration of this beautiful journey.',tentative:false},{day:26,month:'December',title:'Nikah',note:'A sacred promise, heartfelt duas, and the beginning of a new chapter together.',tentative:false},{day:28,month:'December',title:'Reception',note:'More details to follow. We look forward to celebrating with everyone.',tentative:true}]};
+const WEDDING={groom:'Groom Name',bride:'Bride Name',year:2026,city:'City, Gujarat',venue:'Venue details coming soon',mapQuery:'',whatsapp:'',events:[{day:25,month:'December',title:'Haldi & Engagement',note:'A day of colour, blessings, laughter and the first celebration of this beautiful journey.',tentative:false},{day:26,month:'December',title:'Nikah',note:'A sacred promise, heartfelt duas, and the beginning of a new chapter together.',tentative:false},{day:28,month:'December',title:'Reception',note:'More details to follow. We look forward to celebrating with everyone.',tentative:true}]};
 const $=id=>document.getElementById(id);function setText(id,text){$(id).textContent=text}
 function render(){setText('groomHero',WEDDING.groom);setText('brideHero',WEDDING.bride);setText('groomName',WEDDING.groom);setText('brideName',WEDDING.bride);setText('brand',WEDDING.groom+' & '+WEDDING.bride);setText('envelopeNames',WEDDING.groom+' & '+WEDDING.bride);setText('heroDate','25 — 28 December · '+WEDDING.year);setText('venueName',WEDDING.venue);setText('venueLocation',WEDDING.city);document.title=WEDDING.groom+' & '+WEDDING.bride+' — Wedding Invitation';$('mapButton').href='https://maps.google.com/?q='+encodeURIComponent(WEDDING.mapQuery||WEDDING.venue+' '+WEDDING.city);$('rsvpYes').href=whatsappLink('Hello! I’m happy to attend '+WEDDING.groom+' & '+WEDDING.bride+'’s wedding celebrations.');$('rsvpMaybe').href=whatsappLink('Hello! I have a question about '+WEDDING.groom+' & '+WEDDING.bride+'’s wedding celebrations.');const list=$('eventList');list.innerHTML='';WEDDING.events.forEach((e,i)=>{const art=document.createElement('article');art.className='event reveal';art.innerHTML=`<div class="event-date">${e.day} <span>${e.month}</span></div><div><h3>${e.title} ${e.tentative?'<small style="font:italic .7rem Georgia,serif;color:var(--gold)">(tentative)</small>':''}</h3><p>${e.note}</p></div><div class="event-icon">${i===0?'✳':i===1?'♡':'✧'}</div>`;list.appendChild(art)});observeReveals()}
 function whatsappLink(message){const number=(WEDDING.whatsapp||'').replace(/\D/g,'');return number?'https://wa.me/'+number+'?text='+encodeURIComponent(message):'https://wa.me/?text='+encodeURIComponent(message)}
-const envelope=$('envelope'),screen=$('envelopeScreen');let opened=false;function openInvitation(){if(opened)return;opened=true;envelope.classList.add('opened');setTimeout(()=>{screen.classList.add('dismissed');document.body.classList.remove('locked')},850)}envelope.addEventListener('click',openInvitation);envelope.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openInvitation()}});$('skipIntro').addEventListener('click',()=>{opened=true;screen.classList.add('dismissed');document.body.classList.remove('locked')});
+const envelope=$('envelope'),screen=$('envelopeScreen');let opened=false;function finishIntro(){screen.classList.add('dismissed');document.body.classList.remove('locked');window.scrollTo({top:0,behavior:'instant'});}function openInvitation(){if(opened)return;opened=true;envelope.classList.add('opened');$('skipIntro').setAttribute('aria-hidden','true');const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;if(reduced){finishIntro();return;}/* flap opens first; the invitation card rises, then the camera glides into the page */setTimeout(()=>screen.classList.add('journey'),880);setTimeout(finishIntro,1660);}envelope.addEventListener('click',openInvitation);envelope.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openInvitation()}});$('skipIntro').addEventListener('click',()=>{if(opened)return;opened=true;finishIntro();});
 $('photoToggle').addEventListener('change',e=>document.body.classList.toggle('photo-hidden',!e.target.checked));const nav=$('nav'),links=$('navlinks'),menu=$('menuToggle');menu.addEventListener('click',()=>{const open=links.classList.toggle('open');menu.setAttribute('aria-expanded',String(open));menu.textContent=open?'×':'☰'});links.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{links.classList.remove('open');menu.setAttribute('aria-expanded','false');menu.textContent='☰'}));
 function onScroll(){const y=window.scrollY;nav.classList.toggle('scrolled',y>25);const max=document.documentElement.scrollHeight-window.innerHeight;$('progress').style.width=(max>0?y/max*100:0)+'%'}window.addEventListener('scroll',onScroll,{passive:true});onScroll();
 let observer;function observeReveals(){if(observer)observer.disconnect();observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.12,rootMargin:'0px 0px -30px 0px'});document.querySelectorAll('.reveal:not(.visible)').forEach(el=>observer.observe(el))}observeReveals();
